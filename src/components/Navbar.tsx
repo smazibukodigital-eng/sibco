@@ -21,9 +21,9 @@ export const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
-            <Link to="/" className="flex-shrink-0 flex items-center gap-2">
-              <Logo className="w-10 h-10" />
-              <span className="font-bold text-xl tracking-tight text-gray-900">SIBCOMART</span>
+            <Link to="/" className="flex-shrink-0 flex items-center gap-3">
+              <Logo className="w-14 h-14" />
+              <span className="font-bold text-2xl tracking-tight text-gray-900">SIBCOMART</span>
             </Link>
             <div className="hidden sm:ml-8 sm:flex sm:space-x-8">
               {navLinks.map((link) => {

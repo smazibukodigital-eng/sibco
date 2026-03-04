@@ -98,13 +98,13 @@ export const Cart = () => {
           </dl>
 
           <div className="mt-6">
-            <button
-              type="button"
+            <Link
+              to="/checkout"
               className="w-full bg-blue-600 border border-transparent rounded-md shadow-sm py-3 px-4 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-blue-500 flex justify-center items-center"
             >
               Proceed to Checkout
               <ArrowRight className="ml-2 h-5 w-5" />
-            </button>
+            </Link>
           </div>
         </div>
       </div>

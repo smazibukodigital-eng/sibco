@@ -13,6 +13,7 @@ import { GroceryPacks } from './pages/GroceryPacks';
 import { Stationery } from './pages/Stationery';
 import { Tutoring } from './pages/Tutoring';
 import { Cart } from './pages/Cart';
+import { Checkout } from './pages/Checkout';
 
 export default function App() {
   return (
@@ -27,6 +28,7 @@ export default function App() {
               <Route path="/stationery" element={<Stationery />} />
               <Route path="/tutoring" element={<Tutoring />} />
               <Route path="/cart" element={<Cart />} />
+              <Route path="/checkout" element={<Checkout />} />
             </Routes>
           </main>
           <CartToast />
