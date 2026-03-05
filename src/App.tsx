@@ -14,6 +14,7 @@ import { Stationery } from './pages/Stationery';
 import { Tutoring } from './pages/Tutoring';
 import { Cart } from './pages/Cart';
 import { Checkout } from './pages/Checkout';
+import { Contact } from './pages/Contact';
 
 export default function App() {
   return (
@@ -29,10 +30,11 @@ export default function App() {
               <Route path="/tutoring" element={<Tutoring />} />
               <Route path="/cart" element={<Cart />} />
               <Route path="/checkout" element={<Checkout />} />
+              <Route path="/contact" element={<Contact />} />
             </Routes>
           </main>
           <CartToast />
-          
+
           <footer className="bg-white border-t border-gray-200 py-8 mt-auto">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-500 text-sm">
               &copy; {new Date().getFullYear()} SIBCOMART. All rights reserved.

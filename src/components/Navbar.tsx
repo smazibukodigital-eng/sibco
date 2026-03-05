@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ShoppingCart, Menu, X, BookOpen, ShoppingBag, GraduationCap } from 'lucide-react';
+import { ShoppingCart, Menu, X, BookOpen, ShoppingBag, GraduationCap, Phone } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { cn } from '../lib/utils';
 import { Logo } from './Logo';
@@ -14,6 +14,7 @@ export const Navbar = () => {
     { name: 'Grocery Packs', path: '/grocery', icon: ShoppingBag },
     { name: 'Stationery', path: '/stationery', icon: BookOpen },
     { name: 'Tutoring', path: '/tutoring', icon: GraduationCap },
+    { name: 'Contact', path: '/contact', icon: Phone },
   ];
 
   return (
