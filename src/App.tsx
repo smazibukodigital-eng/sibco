@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  ArrowRight, 
-  BarChart3, 
-  Mail, 
-  Menu, 
-  MonitorSmartphone, 
-  X, 
+import {
+  ArrowRight,
+  BarChart3,
+  Mail,
+  Menu,
+  MonitorSmartphone,
+  X,
   Zap,
   CheckCircle2
 } from 'lucide-react';
@@ -29,7 +29,7 @@ export default function App() {
     <div className="min-h-screen bg-white text-gray-700 font-sans">
 
       {/* Navbar */}
-      <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-white/95 backdrop-blur-md shadow-md py-4 border-b border-gray-100' : 'bg-transparent py-6'}`}>
+      <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-white/95 backdrop-blur-md shadow-md py-4 border-b border-gray-100' : 'bg-white/80 backdrop-blur-sm py-6'}`}>
         <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded bg-emerald-500 flex items-center justify-center">
@@ -38,10 +38,9 @@ export default function App() {
             <span className="text-slate-900 font-bold text-xl tracking-tight">Sibco Growth Partners</span>
           </div>
 
-          {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-8">
             <a href="#services" className="text-sm font-medium text-slate-600 hover:text-emerald-600 transition-colors">Services</a>
-            <a href="#process" className="text-sm font-medium text-slate-600 hover:text-emerald-600 transition-colors">Process</a>
+            <a href="#why-us" className="text-sm font-medium text-slate-600 hover:text-emerald-600 transition-colors">Why Us</a>
             <a href="#contact" className="text-sm font-medium text-slate-600 hover:text-emerald-600 transition-colors">Contact</a>
             <button
               onClick={scrollToContact}
@@ -51,17 +50,15 @@ export default function App() {
             </button>
           </div>
 
-          {/* Mobile Toggle */}
           <button className="md:hidden text-slate-800" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
             {mobileMenuOpen ? <X /> : <Menu />}
           </button>
         </div>
 
-        {/* Mobile Menu */}
         {mobileMenuOpen && (
           <div className="md:hidden absolute top-full left-0 w-full bg-white border-b border-gray-100 shadow-lg py-6 px-6 flex flex-col gap-4">
             <a href="#services" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium text-slate-700">Services</a>
-            <a href="#process" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium text-slate-700">Process</a>
+            <a href="#why-us" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium text-slate-700">Why Us</a>
             <button onClick={scrollToContact} className="mt-2 px-6 py-3 rounded-lg bg-emerald-500 text-white font-bold text-center">
               Book Strategy Call
             </button>
@@ -69,10 +66,18 @@ export default function App() {
         )}
       </nav>
 
-      {/* Hero Section */}
-      <section className="relative pt-40 pb-20 md:pt-52 md:pb-32 overflow-hidden bg-white">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-emerald-100 rounded-full blur-[120px] pointer-events-none opacity-60"></div>
-        <div className="max-w-7xl mx-auto px-6 relative z-10">
+      {/* Hero Section — full-width image background */}
+      <section className="relative min-h-screen flex items-center overflow-hidden">
+        {/* Background image */}
+        <img
+          src="/images/hero_bg.png"
+          alt="Digital agency workspace"
+          className="absolute inset-0 w-full h-full object-cover object-center"
+        />
+        {/* White overlay so text stays readable */}
+        <div className="absolute inset-0 bg-white/75"></div>
+
+        <div className="relative z-10 max-w-7xl mx-auto px-6 pt-32 pb-20">
           <div className="max-w-4xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-emerald-300 bg-emerald-50 text-emerald-700 text-xs font-bold uppercase tracking-wider mb-8">
               <Zap size={14} />
@@ -84,7 +89,7 @@ export default function App() {
               <span className="text-emerald-500">client-generating systems.</span>
             </h1>
 
-            <p className="text-lg md:text-xl text-slate-500 max-w-2xl mb-10 leading-relaxed">
+            <p className="text-lg md:text-xl text-slate-600 max-w-2xl mb-10 leading-relaxed">
               Stop losing leads to competitors because of a slow, outdated website. We build premium, high-converting digital assets that work 24/7 to grow your bottom line.
             </p>
 
@@ -97,7 +102,7 @@ export default function App() {
               </button>
               <a
                 href="#services"
-                className="px-8 py-4 rounded-lg border border-gray-200 bg-gray-50 font-semibold text-slate-700 hover:bg-gray-100 flex items-center justify-center transition-all"
+                className="px-8 py-4 rounded-lg border border-gray-300 bg-white/80 font-semibold text-slate-700 hover:bg-white flex items-center justify-center transition-all"
               >
                 View Our Services
               </a>
@@ -107,7 +112,7 @@ export default function App() {
       </section>
 
       {/* Problem / Solution */}
-      <section className="py-20 border-y border-gray-100 bg-gray-50">
+      <section id="why-us" className="py-20 bg-gray-50 border-y border-gray-100">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
@@ -151,9 +156,18 @@ export default function App() {
         </div>
       </section>
 
-      {/* Services */}
-      <section id="services" className="py-32 bg-white">
-        <div className="max-w-7xl mx-auto px-6">
+      {/* Services — with background image */}
+      <section id="services" className="relative py-32 overflow-hidden">
+        {/* Background image */}
+        <img
+          src="/images/services_bg.png"
+          alt="Digital services"
+          className="absolute inset-0 w-full h-full object-cover object-center"
+        />
+        {/* White overlay */}
+        <div className="absolute inset-0 bg-white/88"></div>
+
+        <div className="relative z-10 max-w-7xl mx-auto px-6">
           <div className="text-center max-w-3xl mx-auto mb-20">
             <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6">Everything you need to scale digitally.</h2>
             <p className="text-lg text-slate-500">We don't just build pretty sites. We build functional growth engines designed for service-based businesses.</p>
@@ -165,7 +179,7 @@ export default function App() {
               { icon: <BarChart3 size={28} />, title: "SEO & Lead Gen", desc: "We make sure you show up when local customers search for your services on Google, driving warm leads directly to you." },
               { icon: <Zap size={28} />, title: "Marketing Automation", desc: "Stop doing manual follow-ups. We build systems that automatically capture leads and nurture them via email and SMS." }
             ].map((s, i) => (
-              <div key={i} className="bg-white border border-gray-200 p-8 rounded-2xl hover:border-emerald-400 hover:shadow-xl transition-all group">
+              <div key={i} className="bg-white/90 backdrop-blur-sm border border-gray-200 p-8 rounded-2xl hover:border-emerald-400 hover:shadow-2xl transition-all group">
                 <div className="w-14 h-14 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-500 mb-6 group-hover:scale-110 transition-transform">
                   {s.icon}
                 </div>
