@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mandate Tracker</title>
+    
+    <link rel="apple-touch-icon" href="icon.png">
+    <link rel="icon" href="icon.png">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        appBg: '#161618',
+                        cardBg: '#252528',
+                        cardHover: '#2e2e32',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap');
+        
+        body {
+            background-color: #161618;
+            color: white;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .hide-scroll::-webkit-scrollbar { display: none; }
+        .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .checkbox-custom {
+            appearance: none;
+            background-color: transparent;
+            margin: 0;
+            width: 1.75rem;
+            height: 1.75rem;
+            border: 2px solid #555;
+            border-radius: 50%;
+            display: grid;
+            place-content: center;
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .checkbox-custom::before {
+            content: "\f00c";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            color: white;
+            font-size: 0.9rem;
+            transform: scale(0);
+            transition: 120ms transform ease-in-out;
+        }
+
+        .checkbox-custom:checked {
+            background: linear-gradient(to right, #3b82f6, #8b5cf6);
+            border-color: transparent;
+        }
+
+        .checkbox-custom:checked::before { transform: scale(1); }
+        
+        .gradient-text {
+            background: linear-gradient(to right, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .glitch-text {
+            text-shadow: 2px 0 red, -2px 0 blue;
+            animation: glitch 1s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch {
+            0% { text-shadow: 2px 0 red, -2px 0 blue; }
+            50% { text-shadow: -2px 0 red, 2px 0 blue; }
+            100% { text-shadow: 2px 0 blue, -2px 0 red; }
+        }
+    </style>
+</head>
+<body class="flex flex-col h-screen overflow-hidden font-sans">
+
+    <!-- OVERLAY SCREEN (Lock, Late, or Finished) -->
+    <div id="clock-in-screen" class="fixed inset-0 bg-[#121214] z-[100] flex flex-col items-center justify-center p-6 text-center transition-opacity duration-300">
+        <div id="clock-in-icon" class="text-7xl mb-6 text-white/50"><i class="fas fa-lock"></i></div>
+        <h1 class="text-5xl font-black text-white mb-2 tracking-widest uppercase" id="clock-in-title">Off Duty</h1>
+        <p class="text-gray-400 mb-12 text-lg font-medium" id="clock-in-subtitle">You have not started today's session.</p>
+        
+        <button id="start-day-btn" onclick="clockIn()" class="w-full max-w-sm bg-gradient-to-r from-blue-600 to-purple-600 py-6 rounded-2xl font-black text-2xl tracking-widest uppercase shadow-[0_0_50px_rgba(59,130,246,0.4)] animate-pulse hover:scale-105 transition-transform text-white">
+            Start Day
+        </button>
+    </div>
+
+    <!-- Scrollable Main Container -->
+    <div class="flex-1 overflow-y-auto pb-32 pt-8 px-6">
+        <!-- Header -->
+        <header class="flex justify-between items-start mb-8">
+            <div>
+                <div class="flex items-center gap-2 mb-1">
+                    <p class="text-gray-400 font-semibold tracking-wider text-sm uppercase">Johannesburg Server</p>
+                    <button onclick="promptResetDays()" class="text-gray-500 hover:text-red-400 transition-colors p-1" title="Reset All Progress">
+                        <i class="fas fa-power-off"></i>
+                    </button>
+                </div>
+                <h1 class="text-4xl font-extrabold leading-tight">Hello<br>Boss</h1>
+            </div>
+            <div class="text-right">
+                <div id="clock" class="text-sm font-mono text-blue-400 font-bold bg-blue-500/10 px-3 py-1 rounded-full">00:00</div>
+            </div>
+        </header>
+
+        <!-- Tabs -->
+        <nav class="mb-8">
+            <ul id="tabs-container" class="flex overflow-x-auto hide-scroll gap-3 pb-2"></ul>
+        </nav>
+
+        <!-- Daily Progress Card -->
+        <div class="bg-cardBg rounded-[2rem] p-6 mb-8 shadow-lg border border-white/5 relative overflow-hidden">
+            <div class="absolute -right-4 -top-4 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="flex justify-between items-center mb-2 relative z-10">
+                <h2 class="text-xl font-bold">Daily progress</h2>
+                <div class="flex -space-x-2">
+                    <div class="w-8 h-8 rounded-full bg-blue-500 border-2 border-cardBg flex items-center justify-center text-xs"><i class="fas fa-fire"></i></div>
+                    <div class="w-8 h-8 rounded-full bg-purple-500 border-2 border-cardBg flex items-center justify-center text-xs"><i class="fas fa-star"></i></div>
+                </div>
+            </div>
+            <p class="text-sm text-gray-400 mb-6 relative z-10">Overall daily task completion.</p>
+            <div class="mb-2 font-bold text-2xl relative z-10" id="progress-text">0%</div>
+            <div class="w-full bg-gray-700 rounded-full h-2.5 relative z-10">
+                <div class="bg-gradient-to-r from-blue-500 to-purple-600 h-2.5 rounded-full transition-all duration-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]" id="progress-bar" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <!-- Current Mission Section -->
+        <div class="flex justify-between items-end mb-4 px-2">
+            <h2 class="text-2xl font-bold" id="current-mission-title">Mission Tasks</h2>
+            <div class="text-sm font-bold bg-cardBg px-3 py-1 rounded-lg border border-white/5 shadow-sm">
+                <span class="gradient-text tracking-widest uppercase">Day <span id="current-mission-day">1</span></span>
+            </div>
+        </div>
+
+        <div class="space-y-3" id="tasks-container"></div>
+    </div>
+
+    <!-- Footer Action -->
+    <footer class="absolute bottom-0 w-full bg-gradient-to-t from-appBg via-appBg to-transparent p-6 flex gap-4 pointer-events-none">
+        <div class="w-full flex gap-4 pointer-events-auto pb-2">
+            <button onclick="addTask()" class="bg-cardBg hover:bg-cardHover border border-white/10 text-white flex-1 py-4 rounded-2xl font-bold shadow-xl transition-all flex justify-center items-center gap-2">
+                <i class="fas fa-plus text-blue-400"></i> <span class="text-sm">Add</span>
+            </button>
+            <button onclick="promptEndDay()" class="bg-gradient-to-r from-blue-500 to-purple-600 hover:opacity-90 text-white flex-[2] py-4 rounded-2xl font-bold shadow-xl transition-all uppercase tracking-wider text-sm flex justify-center items-center gap-2">
+                <i class="fas fa-moon"></i> End Day
+            </button>
+        </div>
+    </footer>
+
+    <!-- Modal Overlay -->
+    <div id="modal-overlay" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-300"></div>
+
+    <script>
+        const generateId = () => Math.random().toString(36).substr(2, 9);
+
+        let appConfig = JSON.parse(localStorage.getItem('gtaMandateConfig')) || {
+            dayStarted: false,
+            lastDate: new Date().toDateString(),
+            lastCompletedDate: null
+        };
+
+        const DEFAULT_STATE = [
+            { id: "dailies", title: "Dailies", day: 1, tasks: [
+                { id: generateId(), text: "Physical Prep (Train 20 min)", completed: false },
+                { id: generateId(), text: "Intel Gathering (Read 20 pages)", completed: false },
+                { id: generateId(), text: "Empire Building (Work on agency 30m)", completed: false },
+                { id: generateId(), text: "Captain's Log (Write one thing)", completed: false },
+                { id: generateId(), text: "Review the Mandate", completed: false }
+            ]},
+            { id: "fitness", title: "Fitness", day: 1, tasks: [
+                { id: generateId(), text: "Master 5 bodyweight movements", completed: false },
+                { id: generateId(), text: "Log all food in Cronometer", completed: false },
+                { id: generateId(), text: "Hit daily protein target", completed: false }
+            ]},
+            { id: "agency", title: "Agency", day: 1, tasks: [
+                { id: generateId(), text: "Build/Refine 1-page portfolio", completed: false },
+                { id: generateId(), text: "Brainstorm Joburg SME niche", completed: false },
+                { id: generateId(), text: "Prospect 1 potential local client", completed: false }
+            ]},
+            { id: "articulation", title: "Articulation", day: 1, tasks: [
+                { id: generateId(), text: "Record 2-min voice memo", completed: false },
+                { id: generateId(), text: "Listen back & tally filler words", completed: false },
+                { id: generateId(), text: "Write one paragraph in notes app", completed: false }
+            ]},
+            { id: "trading", title: "Trading", day: 1, tasks: [
+                { id: generateId(), text: "Study chosen strategy for 30m", completed: false },
+                { id: generateId(), text: "Execute & log paper trades", completed: false },
+                { id: generateId(), text: "Journal reasoning for every trade", completed: false }
+            ]},
+            { id: "newsletter", title: "Newsletter", day: 1, tasks: [
+                { id: generateId(), text: "Draft/Edit newsletter content", completed: false },
+                { id: generateId(), text: "Engage on X/LinkedIn", completed: false }
+            ]},
+            { id: "unisa", title: "UNISA", day: 1, tasks: [
+                { id: generateId(), text: "Complete 1 hour of coursework", completed: false },
+                { id: generateId(), text: "Identify 1 concept to apply to agency", completed: false }
+            ]}
+        ];
+
+        let state = JSON.parse(localStorage.getItem('gtaMandateState2')) || DEFAULT_STATE;
+        let activeTabId = state[0].id;
+
+        const todayStr = new Date().toDateString();
+        if (appConfig.lastDate !== todayStr) {
+            appConfig.dayStarted = false;
+            appConfig.lastDate = todayStr;
+            saveConfig();
+        }
+
+        function saveConfig() {
+            localStorage.setItem('gtaMandateConfig', JSON.stringify(appConfig));
+        }
+
+        function saveState() {
+            localStorage.setItem('gtaMandateState2', JSON.stringify(state));
+            updateOverallProgress();
+        }
+
+        // Overlay Logic
+        function checkOverlay() {
+            const screen = document.getElementById('clock-in-screen');
+            const title = document.getElementById('clock-in-title');
+            const subtitle = document.getElementById('clock-in-subtitle');
+            const btn = document.getElementById('start-day-btn');
+            const icon = document.getElementById('clock-in-icon');
+
+            const now = new Date();
+            const currentDayStr = now.toDateString();
+
+            if (appConfig.lastCompletedDate === currentDayStr) {
+                // Day is completely done
+                screen.classList.remove('hidden');
+                title.innerText = "REST UP";
+                title.classList.remove('glitch-text', 'text-red-500');
+                title.classList.add('text-blue-500');
+                subtitle.innerText = "Session complete. See you tomorrow, Boss.";
+                icon.innerHTML = '<i class="fas fa-bed"></i>';
+                icon.className = "text-7xl mb-6 text-blue-500";
+                
+                btn.classList.remove('hidden');
+                btn.innerText = "Resume Day";
+                btn.className = "w-full max-w-sm bg-gradient-to-r from-gray-700 to-gray-600 py-6 rounded-2xl font-black text-2xl tracking-widest uppercase shadow-lg hover:scale-105 transition-transform text-white";
+                btn.onclick = resumeDay;
+            } 
+            else if (!appConfig.dayStarted) {
+                // Day not started yet
+                screen.classList.remove('hidden');
+                btn.classList.remove('hidden');
+                btn.innerText = "Start Day";
+                btn.className = "w-full max-w-sm bg-gradient-to-r from-blue-600 to-purple-600 py-6 rounded-2xl font-black text-2xl tracking-widest uppercase shadow-[0_0_50px_rgba(59,130,246,0.4)] animate-pulse hover:scale-105 transition-transform text-white";
+                btn.onclick = clockIn;
+
+                if (now.getHours() >= 10) {
+                    title.innerText = "LATE FOR DUTY";
+                    title.classList.add('glitch-text', 'text-red-500');
+                    title.classList.remove('text-blue-500', 'text-white');
+                    subtitle.innerText = "WAKE UP. CLOCK IN NOW.";
+                    icon.innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
+                    icon.className = "text-7xl mb-6 text-red-600 animate-pulse";
+                    
+                    if (navigator.vibrate && Math.random() > 0.8) navigator.vibrate([500, 200, 500]);
+                } else {
+                    title.innerText = "OFF DUTY";
+                    title.classList.remove('glitch-text', 'text-red-500', 'text-blue-500');
+                    title.classList.add('text-white');
+                    subtitle.innerText = "You have not started today's session.";
+                    icon.innerHTML = '<i class="fas fa-lock"></i>';
+                    icon.className = "text-7xl mb-6 text-white/50";
+                }
+            } 
+            else {
+                // Active session
+                screen.classList.add('hidden');
+            }
+        }
+
+        function clockIn() {
+            appConfig.dayStarted = true;
+            appConfig.lastDate = new Date().toDateString();
+            saveConfig();
+            
+            if (Notification.permission !== "granted" && Notification.permission !== "denied") {
+                Notification.requestPermission();
+            }
+
+            if (navigator.vibrate) navigator.vibrate(50);
+            
+            const screen = document.getElementById('clock-in-screen');
+            screen.classList.add('opacity-0');
+            setTimeout(() => screen.classList.add('hidden'), 500);
+        }
+
+        function resumeDay() {
+            appConfig.dayStarted = true;
+            appConfig.lastCompletedDate = null;
+            saveConfig();
+            
+            if (navigator.vibrate) navigator.vibrate(50);
+            
+            const screen = document.getElementById('clock-in-screen');
+            screen.classList.add('opacity-0');
+            setTimeout(() => screen.classList.add('hidden'), 500);
+        }
+
+        function clockOut() {
+            appConfig.dayStarted = false;
+            appConfig.lastCompletedDate = new Date().toDateString();
+            saveConfig();
+            closeModal();
+            
+            const screen = document.getElementById('clock-in-screen');
+            screen.classList.remove('hidden', 'opacity-0');
+            checkOverlay();
+        }
+
+        // Render functions
+        function renderTabs() {
+            const container = document.getElementById('tabs-container');
+            container.innerHTML = '';
+            state.forEach(mission => {
+                const isActive = mission.id === activeTabId;
+                const li = document.createElement('li');
+                if(isActive) li.className = `px-5 py-2.5 rounded-full font-bold text-sm whitespace-nowrap cursor-pointer shadow-lg bg-gradient-to-r from-blue-500 to-purple-600 text-white`;
+                else li.className = `px-5 py-2.5 rounded-full font-semibold text-sm whitespace-nowrap cursor-pointer bg-cardBg text-gray-400 hover:text-white transition-colors border border-white/5`;
+                li.onclick = () => { activeTabId = mission.id; renderTabs(); renderContent(); };
+                li.innerHTML = mission.title;
+                container.appendChild(li);
+            });
+        }
+
+        function toggleTask(missionId, taskId) {
+            const mission = state.find(m => m.id === missionId);
+            const task = mission.tasks.find(t => t.id === taskId);
+            task.completed = !task.completed;
+            saveState();
+            renderContent();
+            if(navigator.vibrate) navigator.vibrate(10);
+        }
+
+        function updateTaskText(missionId, taskId, newText) {
+            const mission = state.find(m => m.id === missionId);
+            const task = mission.tasks.find(t => t.id === taskId);
+            task.text = newText;
+            saveState();
+        }
+
+        function deleteTask(missionId, taskId) {
+            if(!confirm("Delete this objective?")) return;
+            const mission = state.find(m => m.id === missionId);
+            mission.tasks = mission.tasks.filter(t => t.id !== taskId);
+            saveState();
+            renderContent();
+        }
+
+        function addTask() {
+            const mission = state.find(m => m.id === activeTabId);
+            mission.tasks.push({ id: generateId(), text: "", completed: false });
+            saveState();
+            renderContent();
+            setTimeout(() => {
+                const inputs = document.querySelectorAll('.task-input');
+                if(inputs.length > 0) inputs[inputs.length - 1].focus();
+            }, 50);
+        }
+
+        function updateOverallProgress() {
+            let totalTasks = 0; let completedTasks = 0;
+            state.forEach(m => m.tasks.forEach(t => { totalTasks++; if(t.completed) completedTasks++; }));
+            const percentage = totalTasks === 0 ? 0 : Math.round((completedTasks / totalTasks) * 100);
+            document.getElementById('progress-text').innerText = `${percentage}%`;
+            document.getElementById('progress-bar').style.width = `${percentage}%`;
+        }
+
+        function renderContent() {
+            const container = document.getElementById('tasks-container');
+            const mission = state.find(m => m.id === activeTabId);
+            document.getElementById('current-mission-title').innerText = mission.title;
+            document.getElementById('current-mission-day').innerText = mission.day;
+
+            let html = '';
+            if (mission.tasks.length === 0) html = `<div class="text-center p-8 text-gray-500">No tasks mapped. Hit Add to create one.</div>`;
+
+            mission.tasks.forEach(task => {
+                const textStyle = task.completed ? 'text-gray-500 line-through' : 'text-white';
+                html += `
+                    <div class="bg-cardBg p-4 rounded-2xl flex items-center gap-4 border border-white/5 transition-all ${task.completed ? 'opacity-60' : ''}">
+                        <input type="checkbox" class="checkbox-custom" ${task.completed ? 'checked' : ''} onclick="toggleTask('${mission.id}', '${task.id}')">
+                        <input type="text" class="task-input flex-1 bg-transparent outline-none ${textStyle} text-base placeholder-gray-600 font-medium" 
+                            value="${task.text.replace(/"/g, '&quot;')}" placeholder="Enter objective..."
+                            onchange="updateTaskText('${mission.id}', '${task.id}', this.value)" ${task.completed ? 'readonly' : ''}>
+                        <button onclick="deleteTask('${mission.id}', '${task.id}')" class="text-gray-500 hover:text-red-400 p-2 transition-colors">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function showModal(contentHtml) {
+            const overlay = document.getElementById('modal-overlay');
+            overlay.innerHTML = contentHtml;
+            overlay.classList.remove('hidden');
+            setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+        }
+
+        function closeModal() {
+            const overlay = document.getElementById('modal-overlay');
+            overlay.classList.add('opacity-0');
+            setTimeout(() => overlay.classList.add('hidden'), 300);
+        }
+
+        function promptResetDays() {
+            showModal(`
+                <div class="bg-cardBg p-6 rounded-3xl border border-red-500/30 max-w-sm w-full shadow-2xl transform scale-95 transition-transform duration-300" id="modal-box">
+                    <h3 class="text-2xl font-bold mb-2 text-red-500">Wipe Progress?</h3>
+                    <p class="text-gray-400 text-sm mb-6">Reset EVERY mission line back to Day 1?</p>
+                    <div class="flex gap-3">
+                        <button onclick="closeModal()" class="flex-1 bg-gray-800 hover:bg-gray-700 py-3 rounded-xl font-bold transition-colors">Cancel</button>
+                        <button onclick="executeResetDays()" class="flex-1 bg-red-600 hover:bg-red-500 py-3 rounded-xl font-bold text-white transition-colors">Reset</button>
+                    </div>
+                </div>
+            `);
+            setTimeout(() => document.getElementById('modal-box')?.classList.remove('scale-95'), 10);
+        }
+
+        function executeResetDays() {
+            state.forEach(mission => { mission.day = 1; mission.tasks.forEach(task => task.completed = false); });
+            saveState(); renderTabs(); renderContent(); closeModal();
+        }
+
+        function promptEndDay() {
+            showModal(`
+                <div class="bg-cardBg p-6 rounded-3xl border border-white/10 shadow-2xl max-w-sm w-full transform scale-95 transition-transform duration-300" id="modal-box">
+                    <h3 class="text-2xl font-bold mb-2">End the Day?</h3>
+                    <p class="text-gray-400 text-sm mb-6">Are you sure you want to clock out?</p>
+                    <div class="flex gap-3">
+                        <button onclick="closeModal()" class="flex-1 bg-gray-800 hover:bg-gray-700 py-3 rounded-xl font-bold transition-colors">Cancel</button>
+                        <button onclick="confirmEndDay()" class="flex-1 bg-gradient-to-r from-blue-500 to-purple-600 py-3 rounded-xl font-bold text-white">Confirm</button>
+                    </div>
+                </div>
+            `);
+            setTimeout(() => document.getElementById('modal-box')?.classList.remove('scale-95'), 10);
+        }
+
+        function confirmEndDay() {
+            let everythingChecked = true;
+            state.forEach(mission => {
+                const allCompleted = mission.tasks.length > 0 && mission.tasks.every(t => t.completed);
+                if (!allCompleted && mission.tasks.length > 0) everythingChecked = false;
+                else if (allCompleted) mission.day += 1;
+                mission.tasks.forEach(task => task.completed = false);
+            });
+            saveState(); renderTabs(); renderContent();
+            
+            if (everythingChecked) showSuccessModal();
+            else showFailureModal();
+        }
+
+        function showSuccessModal() {
+            showModal(`
+                <div class="bg-[#1e1e24] p-8 rounded-3xl border border-blue-500/50 shadow-[0_0_50px_-12px_rgba(59,130,246,0.5)] max-w-sm w-full text-center transform scale-95 transition-transform duration-300" id="modal-box">
+                    <div class="text-blue-400 text-6xl mb-4"><i class="fas fa-trophy"></i></div>
+                    <h3 class="text-3xl font-black uppercase text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 mb-2 tracking-widest leading-tight">Mission Passed</h3>
+                    <p class="text-gray-300 text-sm mb-8">+ RESPECT. Flawless execution today, Boss. You are leveling up.</p>
+                    <button onclick="clockOut()" class="w-full bg-blue-600 hover:bg-blue-500 py-4 rounded-xl font-bold tracking-widest uppercase text-white shadow-lg transition-colors">Clock Out</button>
+                </div>
+            `);
+            setTimeout(() => document.getElementById('modal-box')?.classList.remove('scale-95'), 10);
+        }
+
+        function showFailureModal() {
+            showModal(`
+                <div class="bg-[#1e1e24] p-8 rounded-3xl border border-red-500/50 shadow-[0_0_50px_-12px_rgba(239,68,68,0.3)] max-w-sm w-full text-center transform scale-95 transition-transform duration-300" id="modal-box">
+                    <div class="text-red-500 text-6xl mb-4"><i class="fas fa-skull"></i></div>
+                    <h3 class="text-3xl font-black uppercase text-red-500 mb-2 tracking-widest">Do Better</h3>
+                    <p class="text-gray-300 text-sm mb-8">Some objectives were left incomplete. We stay on the grind.</p>
+                    <button onclick="clockOut()" class="w-full bg-red-600 hover:bg-red-500 py-4 rounded-xl font-bold tracking-widest uppercase text-white shadow-lg transition-colors">Clock Out</button>
+                </div>
+            `);
+            setTimeout(() => document.getElementById('modal-box')?.classList.remove('scale-95'), 10);
+        }
+
+        setInterval(() => {
+            const now = new Date();
+            document.getElementById('clock').innerText = now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute:'2-digit' });
+            checkOverlay();
+        }, 1000);
+
+        // Init
+        renderTabs();
+        renderContent();
+        updateOverallProgress();
+        checkOverlay();
+    </script>
+</body>
+</html>
