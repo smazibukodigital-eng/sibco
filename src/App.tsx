@@ -35,7 +35,7 @@ export default function App() {
             <div className="w-8 h-8 rounded bg-emerald-500 flex items-center justify-center">
               <span className="text-white font-bold text-xl leading-none">S</span>
             </div>
-            <span className="text-slate-900 font-bold text-xl tracking-tight">Sibco Growth Partners</span>
+            <span className="text-slate-900 font-bold text-xl tracking-tight">Sibco <span className="text-emerald-500">Growth</span> Partners</span>
           </div>
 
           <div className="hidden md:flex items-center gap-8">
@@ -215,7 +215,7 @@ export default function App() {
             <div className="w-6 h-6 rounded bg-emerald-500 flex items-center justify-center">
               <span className="text-white font-bold text-xs">S</span>
             </div>
-            <span className="text-slate-900 font-bold tracking-tight">Sibco Growth Partners</span>
+            <span className="text-slate-900 font-bold tracking-tight">Sibco <span className="text-emerald-500">Growth</span> Partners</span>
           </div>
           <div className="text-sm text-gray-400">
             &copy; {new Date().getFullYear()} Sibco Growth Partners. All rights reserved.
