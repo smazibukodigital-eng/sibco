@@ -32,7 +32,7 @@ export default function App() {
       <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-white/95 backdrop-blur-md shadow-md py-4 border-b border-gray-100' : 'bg-white/80 backdrop-blur-sm py-6'}`}>
         <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
           <div className="flex items-center gap-2">
-            <img src="/Sibco.svg" alt="Sibco Logo" className="h-14 w-auto" />
+            <img src="/Sibco.svg" alt="Sibco Logo" className="h-10 w-auto" />
             <span className="text-slate-900 font-bold text-xl tracking-tight">Sibco <span className="text-emerald-500">Growth</span> Partners</span>
           </div>
 
@@ -210,7 +210,7 @@ export default function App() {
       <footer className="border-t border-gray-100 py-10 bg-white">
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-2">
-            <img src="/Sibco.svg" alt="Sibco Logo" className="h-10 w-auto" />
+            <img src="/Sibco.svg" alt="Sibco Logo" className="h-8 w-auto" />
             <span className="text-slate-900 font-bold tracking-tight">Sibco <span className="text-emerald-500">Growth</span> Partners</span>
           </div>
           <div className="text-sm text-gray-400">
