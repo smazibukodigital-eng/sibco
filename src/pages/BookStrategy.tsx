@@ -1,62 +1,25 @@
 import React, { useEffect } from 'react';
+import Cal, { getCalApi } from '@calcom/embed-react';
 
 export default function BookStrategy() {
   useEffect(() => {
-    // Cal.com embed initialization script
-    (function (C, A, L) {
-      const p = function (a: any, ar: any) { a.q.push(ar); };
-      const c = C.Cal = C.Cal || function () {
-        const a = c; a.q = a.q || [];
-        for (let i = 0; i < arguments.length; i++) { p(a, arguments[i]); }
-      };
-      c.l = L;
-      const s = A.createElement("script");
-      s.async = true;
-      s.src = "https://app.cal.com/embed/embed.js";
-      const js = A.getElementsByTagName("script")[0];
-      if (js && js.parentNode) {
-        js.parentNode.insertBefore(s, js);
-      } else {
-        A.head.appendChild(s);
-      }
-    })(window, document, "https://app.cal.com/embed/embed.js");
-
-    // Initialize Cal and render the inline booking widget
-    const initCal = () => {
-      if (window.Cal) {
-        window.Cal("init", { origin: "https://cal.com" });
-        window.Cal("inline", {
-          elementOrSelector: "#cal-embed",
-          calLink: "sibusiso/15min",
-          layout: "month_view",
-          config: {
-            theme: "light",
-            styles: {
-              branding: {
-                brandColor: "#10b981" // emerald-500 to match Sibco branding
-              }
+    (async function () {
+      try {
+        const cal = await getCalApi({});
+        cal("ui", {
+          theme: "light",
+          styles: {
+            branding: {
+              brandColor: "#10b981" // emerald-500 matching Sibco branding
             }
-          }
+          },
+          hideEventTypeDetails: false,
+          layout: "month_view"
         });
+      } catch (err) {
+        console.error("Failed to initialize Cal.com Embed API:", err);
       }
-    };
-
-    // If script is already loaded, run init immediately
-    if (window.Cal) {
-      initCal();
-    } else {
-      // Otherwise wait for the script to load
-      const handleLoad = () => {
-        initCal();
-      };
-      window.addEventListener('load', handleLoad);
-      // Fallback timeout in case window load event already fired
-      const timer = setTimeout(initCal, 1000);
-      return () => {
-        window.removeEventListener('load', handleLoad);
-        clearTimeout(timer);
-      };
-    }
+    })();
   }, []);
 
   return (
@@ -72,19 +35,15 @@ export default function BookStrategy() {
           </p>
         </div>
 
-        {/* Cal.com embed container */}
-        <div 
-          id="cal-embed" 
-          className="w-full min-h-[650px] border border-slate-100 rounded-2xl overflow-hidden bg-slate-50"
-        ></div>
+        {/* Cal.com embed using official React component */}
+        <div className="w-full min-h-[650px] border border-slate-100 rounded-2xl overflow-hidden bg-slate-50">
+          <Cal
+            calLink="sibusiso/15min"
+            style={{ width: "100%", height: "100%", minHeight: "650px" }}
+            config={{ layout: 'month_view' }}
+          />
+        </div>
       </div>
     </div>
   );
-}
-
-// Declare Cal interface on window object to prevent TypeScript errors
-declare global {
-  interface Window {
-    Cal?: any;
-  }
 }
