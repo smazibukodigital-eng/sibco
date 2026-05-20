@@ -143,7 +143,7 @@ export default function Home() {
           >
             <Mail size={20} /> Let's Talk Strategy
           </Link>
-          <p className="mt-6 text-sm text-emerald-100">Or email us directly: hello@sibcogrowth.com</p>
+          <p className="mt-6 text-sm text-emerald-100">Or email us directly: m&l@sibcogrowthpartners.co.za</p>
         </div>
       </section>
     </>
