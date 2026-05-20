@@ -54,12 +54,11 @@ export default function Layout() {
           <div className="hidden md:flex items-center gap-8">
             <a href="#services" onClick={(e) => handleNavClick(e, '#services')} className="text-sm font-medium text-slate-600 hover:text-emerald-600 transition-colors">Services</a>
             <a href="#why-us" onClick={(e) => handleNavClick(e, '#why-us')} className="text-sm font-medium text-slate-600 hover:text-emerald-600 transition-colors">Why Us</a>
-            <Link to="/contact" className="text-sm font-medium text-slate-600 hover:text-emerald-600 transition-colors">Contact</Link>
             <Link
               to="/contact"
-              className="px-5 py-2.5 rounded-full bg-emerald-500 text-white font-bold text-sm hover:bg-emerald-600 transition-colors shadow-md shadow-emerald-200"
+              className="px-6 py-3 rounded-full bg-emerald-500 text-white font-bold text-sm hover:bg-emerald-600 transition-colors shadow-md shadow-emerald-200"
             >
-              Book Strategy Call
+              Contact Us
             </Link>
           </div>
 
@@ -72,8 +71,8 @@ export default function Layout() {
           <div className="md:hidden absolute top-full left-0 w-full bg-white border-b border-gray-100 shadow-lg py-6 px-6 flex flex-col gap-4">
             <a href="#services" onClick={(e) => handleNavClick(e, '#services')} className="text-lg font-medium text-slate-700">Services</a>
             <a href="#why-us" onClick={(e) => handleNavClick(e, '#why-us')} className="text-lg font-medium text-slate-700">Why Us</a>
-            <Link to="/contact" className="mt-2 px-6 py-3 rounded-lg bg-emerald-500 text-white font-bold text-center">
-              Book Strategy Call
+            <Link to="/contact" className="mt-2 px-6 py-3 rounded-full bg-emerald-500 text-white font-bold text-center">
+              Contact Us
             </Link>
           </div>
         )}

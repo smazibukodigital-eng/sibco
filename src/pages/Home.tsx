@@ -34,7 +34,7 @@ export default function Home() {
 
             <div className="flex flex-col sm:flex-row gap-4">
               <Link
-                to="/contact"
+                to="/book-strategy"
                 className="px-8 py-4 rounded-lg bg-emerald-500 text-white font-bold text-lg hover:bg-emerald-600 flex items-center justify-center gap-2 transition-all shadow-xl shadow-emerald-200"
               >
                 Get Your Free Website Audit <ArrowRight size={20} />
@@ -138,7 +138,7 @@ export default function Home() {
             Book a free, zero-pressure 15-minute discovery call. We'll audit your current digital presence and show you exactly what we would fix.
           </p>
           <Link
-            to="/contact"
+            to="/book-strategy"
             className="inline-flex items-center gap-2 px-8 py-4 rounded-lg bg-white text-emerald-600 font-bold text-lg hover:shadow-2xl transition-all transform hover:-translate-y-1"
           >
             <Mail size={20} /> Let's Talk Strategy
