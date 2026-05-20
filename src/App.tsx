@@ -3,6 +3,7 @@ import Layout from './components/Layout';
 import Home from './pages/Home';
 import Contact from './pages/Contact';
 import BookStrategy from './pages/BookStrategy';
+import NotFound from './pages/NotFound';
 
 export default function App() {
   return (
@@ -11,6 +12,7 @@ export default function App() {
         <Route index element={<Home />} />
         <Route path="contact" element={<Contact />} />
         <Route path="book-strategy" element={<BookStrategy />} />
+        <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
   );
