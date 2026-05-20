@@ -61,7 +61,7 @@ export default function BookStrategy() {
 
   return (
     <div className="w-full bg-[#f8fafc] py-16 px-6 min-h-[calc(100vh-104px)] flex flex-col items-center justify-center">
-      <div className="max-w-5xl w-full bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100 p-6 md:p-10">
+      <div className="max-w-5xl w-full bg-white rounded-3xl shadow-xl border border-slate-100 p-6 md:p-10">
         <div className="text-center mb-8">
           <p className="text-emerald-500 font-bold tracking-widest text-xs uppercase mb-2">Strategy Session</p>
           <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight">
@@ -73,7 +73,7 @@ export default function BookStrategy() {
         </div>
 
         {/* Cal.com embed container - optimized with loading state and dynamic height for mobile layout */}
-        <div ref={containerRef} className="w-full h-[980px] md:h-[700px] relative overflow-hidden">
+        <div ref={containerRef} className="w-full h-[980px] md:h-[700px] relative overflow-y-auto">
           {isLoading && (
             <div className="absolute inset-0 bg-white z-10 flex flex-col justify-between animate-pulse p-4">
               {/* Top skeleton bar */}
