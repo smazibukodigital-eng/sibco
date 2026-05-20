@@ -36,10 +36,10 @@ export default function BookStrategy() {
         </div>
 
         {/* Cal.com embed using official React component */}
-        <div className="w-full min-h-[650px] border border-slate-100 rounded-2xl overflow-hidden bg-slate-50">
+        <div className="w-full h-[720px] border border-slate-100 rounded-2xl overflow-hidden bg-slate-50">
           <Cal
             calLink="sibusiso/15min"
-            style={{ width: "100%", height: "100%", minHeight: "650px" }}
+            style={{ width: "100%", height: "100%", minHeight: "720px" }}
             config={{ layout: 'month_view' }}
           />
         </div>
